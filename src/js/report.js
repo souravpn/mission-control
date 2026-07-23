@@ -2,6 +2,11 @@
 
 const SEV_ORDER = ['critical','high','medium','low','info'];
 
+// Model-generated text (titles, descs, briefs, etc.) must never be trusted as HTML.
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 // ── Main entry point ──────────────────────────────────────────
 // brief: synthesis output ({ headline, brief[], recommendation, watchOut, bySeverity })
 // findings: raw verified findings array (state.findings)
@@ -40,12 +45,12 @@ function renderBriefLayer(body, brief, findings) {
     const confColor = conf >= 80 ? 'var(--phase-report)' : conf >= 60 ? 'var(--phase-verify)' : 'var(--sev-critical)';
     card.innerHTML = `
       <div class="finding-header">
-        <span class="finding-sev ${f.sev || 'info'}">${f.sev || 'info'}</span>
+        <span class="finding-sev ${esc(f.sev || 'info')}">${esc(f.sev || 'info')}</span>
         ${conf != null ? `<span class="finding-confidence" style="color:${confColor};">${conf}%</span>` : ''}
-        <span class="finding-agent">${(f.sourceAgents || []).join(', ')}</span>
+        <span class="finding-agent">${esc((f.sourceAgents || []).join(', '))}</span>
       </div>
-      <div class="finding-title">${f.title}</div>
-      ${f.action ? `<div class="finding-action">→ ${f.action}</div>` : ''}
+      <div class="finding-title">${esc(f.title)}</div>
+      ${f.action ? `<div class="finding-action">→ ${esc(f.action)}</div>` : ''}
     `;
     briefList.appendChild(card);
   });
@@ -58,12 +63,12 @@ function renderBriefLayer(body, brief, findings) {
       ${brief.recommendation ? `
         <div class="report-action-item report-action-rec">
           <span class="report-action-label">▶ DO FIRST</span>
-          <span class="report-action-text">${brief.recommendation}</span>
+          <span class="report-action-text">${esc(brief.recommendation)}</span>
         </div>` : ''}
       ${brief.watchOut ? `
         <div class="report-action-item report-action-watch">
           <span class="report-action-label">⚠ WATCH OUT</span>
-          <span class="report-action-text">${brief.watchOut}</span>
+          <span class="report-action-text">${esc(brief.watchOut)}</span>
         </div>` : ''}
     `;
     body.appendChild(bar);
@@ -75,11 +80,11 @@ function renderBriefLayer(body, brief, findings) {
   const countBar = document.createElement('div');
   countBar.className = 'report-count-bar';
   countBar.innerHTML = `
-    <span class="rcount rcount-c">${counts.critical||0} critical</span>
-    <span class="rcount rcount-h">${counts.high||0} high</span>
-    <span class="rcount rcount-m">${counts.medium||0} medium</span>
-    <span class="rcount rcount-l">${counts.low||0} low</span>
-    <span class="rcount-total">${total} total findings</span>
+    <span class="rcount rcount-c">${esc(counts.critical||0)} critical</span>
+    <span class="rcount rcount-h">${esc(counts.high||0)} high</span>
+    <span class="rcount rcount-m">${esc(counts.medium||0)} medium</span>
+    <span class="rcount rcount-l">${esc(counts.low||0)} low</span>
+    <span class="rcount-total">${esc(total)} total findings</span>
   `;
   body.appendChild(countBar);
 
@@ -121,15 +126,15 @@ function toggleDrawer(drawer, toggle, findings) {
     const confColor = conf >= 80 ? 'var(--phase-report)' : conf >= 60 ? 'var(--phase-verify)' : 'var(--sev-critical)';
     card.innerHTML = `
       <div class="finding-header">
-        <span class="finding-sev ${f.sev}">${f.sev}</span>
+        <span class="finding-sev ${esc(f.sev)}">${esc(f.sev)}</span>
         ${conf != null ? `<span class="finding-confidence" style="color:${confColor};">${conf}%</span>` : ''}
         ${f.humanReviewed ? `<span class="finding-human-badge">👤 reviewed</span>` : ''}
         ${f.amended ? `<span class="finding-amended-badge">~ amended</span>` : ''}
-        <span class="finding-agent">${f.agent || ''}</span>
+        <span class="finding-agent">${esc(f.agent || '')}</span>
       </div>
-      <div class="finding-title">${f.title}</div>
-      <div class="finding-desc">${f.desc}</div>
-      ${f.verifierReason ? `<div class="finding-verifier-note">${f.verifierReason}</div>` : ''}
+      <div class="finding-title">${esc(f.title)}</div>
+      <div class="finding-desc">${esc(f.desc)}</div>
+      ${f.verifierReason ? `<div class="finding-verifier-note">${esc(f.verifierReason)}</div>` : ''}
     `;
     drawer.appendChild(card);
   });
@@ -211,14 +216,14 @@ function renderPrettyBrief(brief, findings) {
     card.style.animationDelay = `${i * 80}ms`;
     card.innerHTML = `
       <div class="finding-header">
-        <span class="finding-sev ${f.sev || 'info'}">${f.sev || 'info'}</span>
+        <span class="finding-sev ${esc(f.sev || 'info')}">${esc(f.sev || 'info')}</span>
         ${conf != null ? `<span class="finding-confidence" style="color:${confColor};">${conf}%</span>` : ''}
-        <span class="finding-agent">${(f.sourceAgents || []).join(', ')}</span>
+        <span class="finding-agent">${esc((f.sourceAgents || []).join(', '))}</span>
       </div>
-      <div class="finding-title" style="font-size:13px;font-weight:600;margin-bottom:6px;">${f.title}</div>
+      <div class="finding-title" style="font-size:13px;font-weight:600;margin-bottom:6px;">${esc(f.title)}</div>
       ${actionPoints.length > 1
-        ? `<ul class="pretty-action-list">${actionPoints.map(p => `<li>${p}</li>`).join('')}</ul>`
-        : f.action ? `<div class="finding-action">→ ${f.action}</div>` : ''}
+        ? `<ul class="pretty-action-list">${actionPoints.map(p => `<li>${esc(p)}</li>`).join('')}</ul>`
+        : f.action ? `<div class="finding-action">→ ${esc(f.action)}</div>` : ''}
     `;
     list.appendChild(card);
   });
@@ -227,15 +232,15 @@ function renderPrettyBrief(brief, findings) {
   if (brief.recommendation || brief.watchOut) {
     const actionBar = document.createElement('div');
     actionBar.className = 'report-action-bar';
-    if (brief.recommendation) actionBar.innerHTML += `<div class="report-action-item report-action-rec"><div><div class="report-action-label" style="margin-bottom:4px;">▶ DO FIRST</div><div class="report-action-text" style="font-size:12px;font-weight:500;">${brief.recommendation}</div></div></div>`;
-    if (brief.watchOut)      actionBar.innerHTML += `<div class="report-action-item report-action-watch"><div><div class="report-action-label" style="margin-bottom:4px;">⚠ WATCH OUT</div><div class="report-action-text" style="font-size:12px;">${brief.watchOut}</div></div></div>`;
+    if (brief.recommendation) actionBar.innerHTML += `<div class="report-action-item report-action-rec"><div><div class="report-action-label" style="margin-bottom:4px;">▶ DO FIRST</div><div class="report-action-text" style="font-size:12px;font-weight:500;">${esc(brief.recommendation)}</div></div></div>`;
+    if (brief.watchOut)      actionBar.innerHTML += `<div class="report-action-item report-action-watch"><div><div class="report-action-label" style="margin-bottom:4px;">⚠ WATCH OUT</div><div class="report-action-text" style="font-size:12px;">${esc(brief.watchOut)}</div></div></div>`;
     body.appendChild(actionBar);
   }
 
   const counts = brief.bySeverity || {};
   const countBar = document.createElement('div');
   countBar.className = 'report-count-bar';
-  countBar.innerHTML = `<span class="rcount rcount-c">${counts.critical||0} critical</span><span class="rcount rcount-h">${counts.high||0} high</span><span class="rcount rcount-m">${counts.medium||0} medium</span><span class="rcount rcount-l">${counts.low||0} low</span><span class="rcount-total">${brief.totalFindings || findings.length} total</span>`;
+  countBar.innerHTML = `<span class="rcount rcount-c">${esc(counts.critical||0)} critical</span><span class="rcount rcount-h">${esc(counts.high||0)} high</span><span class="rcount rcount-m">${esc(counts.medium||0)} medium</span><span class="rcount rcount-l">${esc(counts.low||0)} low</span><span class="rcount-total">${esc(brief.totalFindings || findings.length)} total</span>`;
   body.appendChild(countBar);
 
   if (toggle) body.appendChild(toggle);
@@ -286,15 +291,15 @@ function renderFlatReport(body, findings) {
         const confColor = conf >= 80 ? 'var(--phase-report)' : conf >= 60 ? 'var(--phase-verify)' : 'var(--sev-critical)';
         card.innerHTML = `
           <div class="finding-header">
-            <span class="finding-sev ${f.sev}">${f.sev}</span>
+            <span class="finding-sev ${esc(f.sev)}">${esc(f.sev)}</span>
             ${conf != null ? `<span class="finding-confidence" style="color:${confColor};">${conf}%</span>` : ''}
             ${f.humanReviewed ? `<span class="finding-human-badge">👤 reviewed</span>` : ''}
             ${f.amended ? `<span class="finding-amended-badge">~ amended</span>` : ''}
-            <span class="finding-agent">${f.agent || ''}</span>
+            <span class="finding-agent">${esc(f.agent || '')}</span>
           </div>
-          <div class="finding-title">${f.title}</div>
-          <div class="finding-desc">${f.desc}</div>
-          ${f.verifierReason ? `<div class="finding-verifier-note">${f.verifierReason}</div>` : ''}
+          <div class="finding-title">${esc(f.title)}</div>
+          <div class="finding-desc">${esc(f.desc)}</div>
+          ${f.verifierReason ? `<div class="finding-verifier-note">${esc(f.verifierReason)}</div>` : ''}
         `;
         list.appendChild(card);
         const rc = document.getElementById('report-count');

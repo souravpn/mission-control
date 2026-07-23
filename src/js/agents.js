@@ -6,6 +6,11 @@ import { requestHumanReview } from './escalation.js';
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+// Model-generated text (agent names, hints, etc.) must never be trusted as HTML.
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 // ── Agent system prompts ──────────────────────────────────────
 
 const SCAN_SYSTEM = `\
@@ -241,9 +246,9 @@ function makeScanTile(def) {
   return makeTile({
     id: `agent-tile-${def.id}`,
     color: def.color, colorRgb: def.colorRgb,
-    name: def.name, model: def.model,
+    name: esc(def.name), model: esc(def.model),
     badgeId: `agent-badge-${def.id}`, badgeText: 'Idle',
-    streamId: `agent-stream-${def.id}`, streamHint: def.description || def.focus,
+    streamId: `agent-stream-${def.id}`, streamHint: esc(def.description || def.focus),
     findingsId: `agent-findings-${def.id}`,
   });
 }
@@ -357,12 +362,12 @@ function makeVerifierTile(agentId, passNum, model) {
   const isEscalated = passNum > 1;
   const color = isEscalated ? 'var(--sev-critical)' : 'var(--phase-verify)';
   const agentName = getAgentName(agentId);
-  const label = isEscalated ? `⚡ ${agentName} · Pass ${passNum}` : `⚡ ${agentName}`;
+  const label = isEscalated ? `⚡ ${esc(agentName)} · Pass ${passNum}` : `⚡ ${esc(agentName)}`;
 
   return makeTile({
     id: `verifier-tile-${agentId}-p${passNum}`,
     color, colorRgb: isEscalated ? '239,68,68' : '245,158,11',
-    name: label, nameSize: '10px', model,
+    name: label, nameSize: '10px', model: esc(model),
     modelColor: color,
     badgeId: `verifier-badge-${agentId}-p${passNum}`, badgeText: 'Queued',
     streamId: `verifier-stream-${agentId}-p${passNum}`, streamHint: 'Waiting for scan...',

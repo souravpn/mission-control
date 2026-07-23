@@ -14,6 +14,8 @@ Watch an Opus 4.8 orchestrator plan a task, write a JS orchestration script, fan
 - **Tiered model usage** — Haiku for leaf tasks, Sonnet for verification, Opus for planning and escalations
 - **Cost separation** — intermediate results live in JS variables (RAM), not in any model's context window
 
+![Mission Control runtime](public/runtime.gif)
+
 ---
 
 ## Getting started
