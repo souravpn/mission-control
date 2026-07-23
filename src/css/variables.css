@@ -1,0 +1,88 @@
+/* ============================================================
+   variables.css — Design tokens
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Base */
+  --bg-base:    #07090d;
+  --bg-panel:   #0d1117;
+  --bg-surface: #131920;
+  --bg-raised:  #1a2230;
+  --bg-card:    #111720;
+
+  /* Accent — cyan primary */
+  --accent:        #00d4ff;
+  --accent-dim:    rgba(0,212,255,0.10);
+  --accent-border: rgba(0,212,255,0.25);
+  --accent-glow:   rgba(0,212,255,0.06);
+
+  /* Phase colors */
+  --phase-plan:    #7c3aed;   /* purple  — orchestrator */
+  --phase-scan:    #0ea5e9;   /* blue    — subagents */
+  --phase-verify:  #f59e0b;   /* amber   — adversarial */
+  --phase-report:  #10b981;   /* green   — synthesis */
+
+  /* Agent tile accent per slot */
+  --agent-0: #0ea5e9;
+  --agent-1: #a78bfa;
+  --agent-2: #f472b6;
+  --agent-3: #34d399;
+
+  /* Severity */
+  --sev-critical: #ef4444;
+  --sev-high:     #f97316;
+  --sev-medium:   #eab308;
+  --sev-low:      #22c55e;
+  --sev-info:     #64748b;
+
+  /* Text */
+  --text-primary:   #e2e8f0;
+  --text-secondary: #64748b;
+  --text-muted:     #334155;
+
+  /* Borders */
+  --border:      rgba(255,255,255,0.06);
+  --border-soft: rgba(255,255,255,0.04);
+
+  /* Danger */
+  --danger: #f87171;
+
+  /* Fonts */
+  --font-ui:   'Rajdhani', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'Inter', sans-serif;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  overflow: hidden;
+}
+
+/* Subtle grid */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.018) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none; z-index: 0;
+}
+
+/* Top ambient */
+body::after {
+  content: '';
+  position: fixed; top: 0; left: 0; right: 0; height: 280px;
+  background: radial-gradient(ellipse at 50% -10%, rgba(0,212,255,0.05) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg-raised); border-radius: 2px; }

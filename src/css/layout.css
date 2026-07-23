@@ -1,0 +1,160 @@
+/* ============================================================
+   layout.css — Mission Control grid
+   ============================================================ */
+
+#app {
+  position: relative; z-index: 1;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 48px 1fr;
+  grid-template-columns: var(--col-sidebar, 260px) 1fr var(--col-agents, 900px);
+  grid-template-areas:
+    "topbar  topbar  topbar"
+    "sidebar center  agents";
+  overflow: hidden;
+}
+
+/* ── Topbar ── */
+#topbar {
+  grid-area: topbar;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 16px; gap: 16px;
+  position: relative; z-index: 10;
+}
+
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.topbar-sep   { width: 1px; height: 20px; background: var(--border); }
+
+/* ── Sidebar ── */
+#sidebar {
+  grid-area: sidebar;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Center column — Orchestrator + Report ── */
+#center {
+  grid-area: center;
+  display: flex; flex-direction: column;
+  min-height: 0; overflow: hidden;
+  border-right: 1px solid var(--border);
+}
+
+#orchestrator-pane {
+  flex: 0 0 auto;
+  max-height: 42%;
+  min-height: 120px;
+  display: flex; flex-direction: column;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+#report-pane {
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+.pane-header {
+  flex-shrink: 0;
+  padding: 9px 14px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-ui);
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--accent);
+}
+
+.pane-header-accent {
+  width: 3px; height: 11px; border-radius: 2px;
+  background: var(--accent);
+}
+
+.pane-body {
+  flex: 1; min-height: 0;
+  overflow-y: auto; padding: 14px;
+}
+
+/* ── Agent grid ── */
+#agents {
+  grid-area: agents;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+#agents-header {
+  flex-shrink: 0;
+  padding: 9px 14px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-ui);
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--accent);
+}
+
+#agents-body-OLD {
+  flex: 1; min-height: 0;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+/* ── Panel header shared ── */
+.panel-header {
+  padding: 12px 14px 10px;
+  font-family: var(--font-ui);
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+}
+
+.panel-header::before {
+  content: ''; width: 3px; height: 11px;
+  background: var(--accent); border-radius: 2px;
+}
+
+/* ── Sidebar sections ── */
+.sidebar-section {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-section.grow { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
+.sessions-list {
+  flex: 1; overflow-y: auto;
+  padding: 6px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+
+.sessions-footer {
+  padding: 8px 10px;
+  border-top: 1px solid var(--border);
+  display: flex; gap: 6px;
+}
+
+#agents-body {
+  flex: 1; min-height: 0;
+  overflow-y: auto;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: min-content;
+  gap: 8px;
+  align-content: start;
+}
+
+/* Divider and verifier tiles span full width */
+.agents-divider { grid-column: 1 / -1; }
+.verifier-tile  { grid-column: span 1; }
